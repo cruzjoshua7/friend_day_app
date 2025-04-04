@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -39,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +48,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -82,37 +85,59 @@ fun MyCalendarScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Calendar Grid
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(7),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            // Add empty slots for the first row
-            items(firstDayOfMonth) {
-                Box(modifier = Modifier.size(40.dp))
+        // **Day Labels (Sunday to Saturday)**
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+            daysOfWeek.forEach { day ->
+                Text(
+                    text = day,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
             }
+        }
 
-            // Add days of the month with borders
-            items(daysInMonth) { day ->
-                val date = currentMonth.atDay(day + 1)
-                val isSelected = selectedDates.contains(date)
+        Spacer(modifier = Modifier.height(8.dp))
 
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .border(1.dp, Color.Gray, RectangleShape) // Added border here
-                        .clip(RectangleShape)
-                        .background(if (isSelected) Color.LightGray else Color.Transparent)
-                        .clickable {
-                            selectedDates = if (isSelected) {
-                                selectedDates - date
-                            } else {
-                                selectedDates + date
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "${day + 1}")
+        // Calendar Grid with Border
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(2.dp, Color.Black, RoundedCornerShape(8.dp)) // Outer border
+                .padding(2.dp)
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(7),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Add empty slots for the first row
+                items(firstDayOfMonth) {
+                    Box(modifier = Modifier.size(40.dp))
+                }
+
+                // Add days of the month with borders
+                items(daysInMonth) { day ->
+                    val date = currentMonth.atDay(day + 1)
+                    val isSelected = selectedDates.contains(date)
+
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .border(1.dp, Color.Gray, RectangleShape) // Individual cell borders
+                            .clip(RectangleShape)
+                            .background(if (isSelected) Color.LightGray else Color.Transparent)
+                            .clickable {
+                                selectedDates = if (isSelected) {
+                                    selectedDates - date
+                                } else {
+                                    selectedDates + date
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "${day + 1}")
+                    }
                 }
             }
         }
@@ -152,7 +177,6 @@ fun MyCalendarScreen(modifier: Modifier = Modifier) {
         }
     }
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)

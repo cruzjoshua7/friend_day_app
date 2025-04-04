@@ -26,6 +26,7 @@ import com.verycool.frienddayapp.presentation.ui.composables.commons.BottomNavBa
 import com.verycool.frienddayapp.presentation.ui.composables.screens.HomeScreen
 import com.verycool.frienddayapp.presentation.ui.composables.screens.LoginScreen
 import com.verycool.frienddayapp.presentation.ui.composables.screens.MyCalendarScreen
+import com.verycool.frienddayapp.presentation.ui.composables.screens.ProfileScreen
 import com.verycool.frienddayapp.presentation.ui.theme.FriendDayAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FriendDayAppTheme {
                 // Manage the current screen and whether to show the BottomNavBar
-                var currentScreen by remember { mutableStateOf("MyCalender") }
+                var currentScreen by remember { mutableStateOf("Profile") }
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -64,7 +65,9 @@ class MainActivity : ComponentActivity() {
                             "Home" -> HomeScreen(modifier = Modifier.padding(innerPadding).statusBarsPadding())
                             "Login" -> LoginScreen(modifier = Modifier.padding(innerPadding).statusBarsPadding())
                             "MyCalender" -> MyCalendarScreen(modifier = Modifier.padding(innerPadding).statusBarsPadding())
-                            // Add other screens as needed
+                            "Profile" -> ProfileScreen(modifier = Modifier.padding(innerPadding).statusBarsPadding())
+
+                        // Add other screens as needed
                         }
                     }
                 }
