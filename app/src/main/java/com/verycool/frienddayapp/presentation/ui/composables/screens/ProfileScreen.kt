@@ -37,11 +37,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.verycool.frienddayapp.R
+import com.verycool.frienddayapp.presentation.ui.composables.commons.navigation.Screen
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val context = LocalContext.current
     var username by remember { mutableStateOf("User123") }
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -128,7 +133,9 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Logout action */ },
+            onClick = {
+                navController.navigate(Screen.LoginScreen.route)
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(Color.Red)
         ) {
@@ -184,5 +191,4 @@ fun ProfileCard(
 @Preview(showBackground = true)
 @Composable
 fun PreviewProfileScreen() {
-    ProfileScreen()
 }
