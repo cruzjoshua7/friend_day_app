@@ -41,7 +41,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -54,6 +56,9 @@ fun MyCalendarScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
+//    val viewModel: FriendDayViewModel = hiltViewModel()
+
+
     var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     val daysInMonth = currentMonth.lengthOfMonth()

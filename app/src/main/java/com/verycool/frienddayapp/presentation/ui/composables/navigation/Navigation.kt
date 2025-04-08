@@ -1,4 +1,4 @@
-package com.verycool.frienddayapp.presentation.ui.composables.commons.navigation
+package com.verycool.frienddayapp.presentation.ui.composables.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -25,7 +25,7 @@ import com.verycool.frienddayapp.presentation.ui.composables.screens.ProfileScre
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Navigation(modifier: Modifier = Modifier){
+fun Navigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination?.route
@@ -33,20 +33,33 @@ fun Navigation(modifier: Modifier = Modifier){
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (currentDestination != Screen.LoginScreen.route){
+            if (currentDestination != Screen.LoginScreen.route) {
                 BottomNavBar(
-                    onGroupsClick = {navController.navigate(Screen.GroupScreen.route)},
-                    onCalendarClick = {navController.navigate(Screen.MyCalenderScreen.route)},
-                    onProfileClick = {navController.navigate(Screen.ProfileScreen.route)}
+                    currentDestination = currentDestination, // 👈 pass it here
+                    onGroupsClick = {
+                        navController.navigate(Screen.GroupScreen.route) {
+                            popUpTo(Screen.GroupScreen.route) { inclusive = true }
+                        }
+                    },
+                    onCalendarClick = {
+                        navController.navigate(Screen.MyCalenderScreen.route) {
+                            popUpTo(Screen.MyCalenderScreen.route) { inclusive = true }
+                        }
+                    },
+                    onProfileClick = {
+                        navController.navigate(Screen.ProfileScreen.route) {
+                            popUpTo(Screen.ProfileScreen.route) { inclusive = true }
+                        }
+                    }
                 )
             }
         }
-    ){ innerPadding ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-        ){
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.background),
                 contentDescription = null,
@@ -57,14 +70,21 @@ fun Navigation(modifier: Modifier = Modifier){
             NavHost(
                 navController = navController,
                 startDestination = Screen.LoginScreen.route
-            ){
-                composable(route = Screen.LoginScreen.route){ LoginScreen(navController = navController) }
-                composable(route = Screen.GroupScreen.route){ GroupScreen(navController = navController) }
-                composable(route = Screen.MyCalenderScreen.route){ MyCalendarScreen(navController = navController) }
-                composable(route = Screen.ProfileScreen.route){ ProfileScreen(navController = navController) }
+            ) {
+                composable(route = Screen.LoginScreen.route) {
+                    LoginScreen(navController = navController)
+                }
+                composable(route = Screen.GroupScreen.route) {
+                    GroupScreen(navController = navController)
+                }
+                composable(route = Screen.MyCalenderScreen.route) {
+                    MyCalendarScreen(navController = navController)
+                }
+                composable(route = Screen.ProfileScreen.route) {
+                    ProfileScreen(navController = navController)
+                }
             }
         }
-
     }
 }
 

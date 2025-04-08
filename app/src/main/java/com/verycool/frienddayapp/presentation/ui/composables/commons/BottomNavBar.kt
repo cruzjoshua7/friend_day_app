@@ -5,16 +5,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.verycool.frienddayapp.R
+import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
 
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,
+    currentDestination: String?,
     onGroupsClick: () -> Unit,
     onCalendarClick: () -> Unit,
     onProfileClick: () -> Unit
@@ -23,40 +27,50 @@ fun BottomNavBar(
         modifier = modifier.fillMaxWidth()
     ) {
         NavigationBarItem(
-            selected = false, // Set the selection state
+            selected = currentDestination == Screen.GroupScreen.route,
             onClick = onGroupsClick,
             icon = {
                 Image(
-                    painter = painterResource(id = R.drawable.group_logo), // Replace with your drawable
+                    painter = painterResource(id = R.drawable.group_logo),
                     contentDescription = "Groups",
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("Groups") }
+            label = { Text("Groups") },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = Color.DarkGray
+            )
+
         )
         NavigationBarItem(
-            selected = false,
+            selected = currentDestination == Screen.MyCalenderScreen.route,
             onClick = onCalendarClick,
             icon = {
                 Image(
-                    painter = painterResource(id = R.drawable.calender_logo), // Replace with your drawable
+                    painter = painterResource(id = R.drawable.calender_logo),
                     contentDescription = "My Calendar",
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("My Calendar") }
+            label = { Text("My Calendar") },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = Color.DarkGray
+            )
         )
         NavigationBarItem(
-            selected = false,
+            selected = currentDestination == Screen.ProfileScreen.route,
             onClick = onProfileClick,
             icon = {
                 Image(
-                    painter = painterResource(id = R.drawable.profile_image), // Replace with your drawable
+                    painter = painterResource(id = R.drawable.my_profile_icon),
                     contentDescription = "Profile",
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("Profile") }
+            label = { Text("Profile") },
+            colors = NavigationBarItemDefaults.colors(
+                indicatorColor = Color.DarkGray
+            )
         )
     }
 }

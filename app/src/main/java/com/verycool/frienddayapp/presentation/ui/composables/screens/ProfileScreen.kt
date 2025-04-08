@@ -37,16 +37,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.verycool.frienddayapp.R
-import com.verycool.frienddayapp.presentation.ui.composables.commons.navigation.Screen
+import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
+//    val viewModel: FriendDayViewModel = hiltViewModel()
+
+
     val context = LocalContext.current
     var username by remember { mutableStateOf("User123") }
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }

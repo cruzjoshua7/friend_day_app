@@ -1,4 +1,4 @@
-package com.verycool.frienddayapp.presentation.ui.composables.commons.navigation
+package com.verycool.frienddayapp.presentation.ui.composables.navigation
 
 sealed class Screen(val route : String) {
     object GroupScreen : Screen("group_screen")

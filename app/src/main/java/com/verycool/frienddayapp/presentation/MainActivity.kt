@@ -8,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.verycool.frienddayapp.presentation.ui.composables.commons.navigation.Navigation
+import com.verycool.frienddayapp.presentation.ui.composables.navigation.Navigation
 import com.verycool.frienddayapp.presentation.ui.theme.FriendDayAppTheme
 
 class MainActivity : ComponentActivity() {
