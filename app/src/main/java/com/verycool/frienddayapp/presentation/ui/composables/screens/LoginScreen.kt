@@ -33,11 +33,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
-import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 
 @Composable

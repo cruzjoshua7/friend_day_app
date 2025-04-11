@@ -28,10 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.verycool.frienddayapp.R
-import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 // Data class for Group
 
