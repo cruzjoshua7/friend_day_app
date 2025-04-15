@@ -12,12 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.presentation.ui.composables.commons.BottomNavBar
+import com.verycool.frienddayapp.presentation.ui.composables.screens.GroupCalendar
 import com.verycool.frienddayapp.presentation.ui.composables.screens.GroupScreen
 import com.verycool.frienddayapp.presentation.ui.composables.screens.LoginScreen
 import com.verycool.frienddayapp.presentation.ui.composables.screens.MyCalendarScreen
@@ -82,6 +85,18 @@ fun Navigation(modifier: Modifier = Modifier) {
                 }
                 composable(route = Screen.ProfileScreen.route) {
                     ProfileScreen(navController = navController)
+                }
+                composable(
+                    route = Screen.GroupCalender.route + "/{groupId}",
+                    arguments = listOf(
+                        navArgument("groupId"){
+                            type = NavType.IntType
+                            defaultValue = 0
+                            nullable = false
+                        }
+                    )
+                ){ entry ->
+                    GroupCalendar(groupId = entry.arguments?.getInt("groupId")?:0)
                 }
             }
         }

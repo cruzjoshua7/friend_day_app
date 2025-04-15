@@ -30,10 +30,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.verycool.frienddayapp.R
+import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
 
 // Data class for Group
 
 data class Group(
+    val id : Int,
     val name: String,
     val imageRes: Int,
     val description: String,
@@ -50,9 +52,9 @@ fun GroupScreen(
 
     val groups = remember {
         mutableStateListOf(
-            Group("Group A", R.drawable.group_profile_image, "Description A"),
-            Group("Group B", R.drawable.group_profile_image, "Description B"),
-            Group("Group C", R.drawable.group_profile_image, "Description C")
+            Group(1,"Group A", R.drawable.group_profile_image, "Description A"),
+            Group(2,"Group B", R.drawable.group_profile_image, "Description B"),
+            Group(3,"Group C", R.drawable.group_profile_image, "Description C")
         )
     }
         Column(modifier = Modifier.fillMaxSize().padding(16.dp).statusBarsPadding()) {
@@ -79,9 +81,10 @@ fun GroupScreen(
             // Groups List
             LazyColumn {
                 items(groups.size) { index ->
-                    GroupCard(group = groups[index], onFavoriteToggle = {
-                        groups[index] = groups[index].copy(isFavorite = !groups[index].isFavorite)
-                    })
+                    GroupCard(group = groups[index],
+                        onFavoriteToggle = { groups[index] = groups[index].copy(isFavorite = !groups[index].isFavorite)},
+                        navController = navController
+                        )
                 }
             }
         }
@@ -89,12 +92,18 @@ fun GroupScreen(
 }
 
 @Composable
-fun GroupCard(group: Group, onFavoriteToggle: () -> Unit) {
+fun GroupCard(
+    group: Group,
+    onFavoriteToggle: () -> Unit,
+    navController: NavController
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { /* Handle click */ }
+            .clickable {
+                navController.navigate(Screen.GroupCalender.withArgs(group.id.toString()))
+            }
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             Image(
