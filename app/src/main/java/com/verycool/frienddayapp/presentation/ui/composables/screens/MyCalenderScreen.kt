@@ -39,7 +39,6 @@ fun MyCalendarScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
             .padding(16.dp)
     ) {
         CalendarGrid(

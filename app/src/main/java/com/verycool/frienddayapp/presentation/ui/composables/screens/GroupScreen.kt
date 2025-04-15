@@ -30,17 +30,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.verycool.frienddayapp.R
+import com.verycool.frienddayapp.data.model.Group
 import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
 
 // Data class for Group
 
-data class Group(
-    val id : Int,
-    val name: String,
-    val imageRes: Int,
-    val description: String,
-    var isFavorite: Boolean = false
-)
 
 @Composable
 fun GroupScreen(
@@ -107,7 +101,7 @@ fun GroupCard(
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             Image(
-                painter = painterResource(id = group.imageRes),
+                painter = painterResource(id = group.groupImage),
                 contentDescription = null,
                 modifier = Modifier.size(50.dp)
             )

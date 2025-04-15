@@ -1,5 +1,9 @@
 package com.verycool.frienddayapp.di
 
+import com.verycool.frienddayapp.data.repository.GroupRepository
+import com.verycool.frienddayapp.data.repository.GroupRepositoryImpl
+import com.verycool.frienddayapp.data.repository.UserRepository
+import com.verycool.frienddayapp.data.repository.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,5 +16,11 @@ import kotlinx.coroutines.Dispatchers
 object AppModule {
 
     @Provides
-    fun providesDispatcher():CoroutineDispatcher = Dispatchers.IO
+    fun providesDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    fun provideUserRepository(): UserRepository = UserRepositoryImpl()
+
+    @Provides
+    fun provideGroupRepository(): GroupRepository = GroupRepositoryImpl()
 }
