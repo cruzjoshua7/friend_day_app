@@ -32,6 +32,10 @@ class FriendDayViewModel @Inject constructor(
         _selectedUser.value = _selectedUser.value?.copy(selectedDates = dates)
     }
 
+    fun clearSelectedUser(){
+        _selectedUser.value = null
+    }
+
     //group
     private val _groupList = groupRepository.getGroups()
     val groupList = _groupList

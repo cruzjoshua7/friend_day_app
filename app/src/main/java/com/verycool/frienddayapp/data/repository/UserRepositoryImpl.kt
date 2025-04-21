@@ -15,7 +15,7 @@ class UserRepositoryImpl : UserRepository {
 
     private val dummyGroup = listOf(
         Group(1, "Group A", R.drawable.group_profile_image, "Description A"),
-        Group(2, "Group B", R.drawable.group_profile_image, "Description B"),
+//        Group(2, "Group B", R.drawable.group_profile_image, "Description B"),
         Group(3, "Group C", R.drawable.group_profile_image, "Description C")
     )
 

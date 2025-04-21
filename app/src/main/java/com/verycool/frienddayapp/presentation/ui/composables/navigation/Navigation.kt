@@ -36,7 +36,6 @@ fun Navigation(modifier: Modifier = Modifier) {
         .currentBackStackEntryAsState().value?.destination?.route
 
     val viewModel : FriendDayViewModel = hiltViewModel()
-    val defaultUserId = 1
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -50,7 +49,7 @@ fun Navigation(modifier: Modifier = Modifier) {
                         }
                     },
                     onCalendarClick = {
-                        navController.navigate(Screen.MyCalenderScreen.route + "/$defaultUserId") {
+                        navController.navigate(Screen.MyCalenderScreen.route) {
                             popUpTo(Screen.MyCalenderScreen.route) { inclusive = true }
                         }
                     },
@@ -80,23 +79,16 @@ fun Navigation(modifier: Modifier = Modifier) {
                 startDestination = Screen.LoginScreen.route
             ) {
                 composable(route = Screen.LoginScreen.route) {
-                    LoginScreen(navController = navController)
+                    LoginScreen(navController = navController, viewModel = viewModel)
                 }
                 composable(route = Screen.GroupScreen.route) {
-                    GroupScreen(navController = navController)
+                    GroupScreen(navController = navController, viewModel = viewModel)
                 }
-                composable(
-                    route = Screen.MyCalenderScreen.route + "/{userId}",
-                    arguments = listOf(navArgument("userId"){
-                        type = NavType.IntType
-                        defaultValue = 1
-                    })
-                ) {entry ->
-                    val userId = entry.arguments?.getInt("userId") ?: 1
-                    MyCalendarScreen(viewModel = viewModel, userId = userId)
+                composable(route = Screen.MyCalenderScreen.route) {
+                    MyCalendarScreen(viewModel = viewModel)
                 }
                 composable(route = Screen.ProfileScreen.route) {
-                    ProfileScreen(navController = navController)
+                    ProfileScreen(navController = navController, viewModel = viewModel)
                 }
                 composable(
                     route = Screen.GroupCalender.route + "/{groupId}",

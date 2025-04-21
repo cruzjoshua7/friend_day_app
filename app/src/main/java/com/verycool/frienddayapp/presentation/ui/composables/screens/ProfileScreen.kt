@@ -41,14 +41,14 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: FriendDayViewModel
 ) {
-//    val viewModel: FriendDayViewModel = hiltViewModel()
-
 
     val context = LocalContext.current
     var username by remember { mutableStateOf("User123") }
@@ -137,6 +137,7 @@ fun ProfileScreen(
 
         Button(
             onClick = {
+                viewModel.clearSelectedUser()
                 navController.navigate(Screen.LoginScreen.route)
             },
             modifier = Modifier.fillMaxWidth(),

@@ -36,12 +36,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel : FriendDayViewModel
     ) {
 
 //    val viewModel: FriendDayViewModel = hiltViewModel()
@@ -127,6 +129,7 @@ fun LoginScreen(
         // Submit Button
         Button(
             onClick = {
+                viewModel.selectUser(1)
                 navController.navigate(Screen.GroupScreen.route)
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF6200EE)),

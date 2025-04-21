@@ -20,8 +20,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -32,31 +36,30 @@ import androidx.navigation.NavController
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.data.model.Group
 import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
-
-// Data class for Group
-
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 @Composable
 fun GroupScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: FriendDayViewModel
 ) {
-//    val viewModel: FriendDayViewModel = hiltViewModel()
-
-
-    val groups = remember {
-        mutableStateListOf(
-            Group(1,"Group A", R.drawable.group_profile_image, "Description A"),
-            Group(2,"Group B", R.drawable.group_profile_image, "Description B"),
-            Group(3,"Group C", R.drawable.group_profile_image, "Description C")
-        )
+    val user by viewModel.selectedUser.collectAsState()
+    val groups = remember(user) {
+        user?.userGroups?.toMutableStateList() ?: mutableStateListOf()
     }
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp).statusBarsPadding()) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .statusBarsPadding()
+        ){
             // Buttons for Create and Join Group
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
+            ){
                 Button(
                     onClick = { /* Handle Create Group */ },
                     colors = ButtonDefaults.buttonColors(Color(0xFF6200EE))
@@ -70,6 +73,7 @@ fun GroupScreen(
                     Text("Join Group", color = Color.White)
                 }
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             // Groups List
