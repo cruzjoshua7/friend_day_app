@@ -2,7 +2,6 @@ package com.verycool.frienddayapp.presentation.ui.composables.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,17 +13,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.verycool.frienddayapp.presentation.ui.composables.commons.CalendarGrid
-import java.time.LocalDate
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 import java.time.YearMonth
 
 
@@ -32,9 +29,15 @@ import java.time.YearMonth
 @Composable
 fun MyCalendarScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    viewModel: FriendDayViewModel,
+    userId : Int
 ) {
-    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
+    LaunchedEffect(userId) {
+        viewModel.selectUser(userId)
+    }
+
+    val user by viewModel.selectedUser.collectAsState()
+    val selectedDates = user?.selectedDates ?: emptySet()
 
     Column(
         modifier = modifier
@@ -44,11 +47,12 @@ fun MyCalendarScreen(
         CalendarGrid(
             selectedDates = selectedDates,
             onDateClick = { date ->
-                selectedDates = if (selectedDates.contains(date)) {
+                val updateDates = if (selectedDates.contains(date)){
                     selectedDates - date
                 } else {
                     selectedDates + date
                 }
+                viewModel.updateSelectedDates(updateDates)
             }
         )
 
@@ -69,19 +73,8 @@ fun MyCalendarScreen(
 
             Button(
                 onClick = {
-                    val currentMonth = YearMonth.now()
-                    selectedDates = selectedDates.filterNot {
-                        it.year == currentMonth.year && it.month == currentMonth.month
-                    }.toSet()
+                    viewModel.updateSelectedDates(emptySet())
                 },
-                colors = ButtonDefaults.buttonColors(Color(0xFF6200EE)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Clear Month", color = Color.White)
-            }
-
-            Button(
-                onClick = { selectedDates = emptySet() },
                 colors = ButtonDefaults.buttonColors(Color(0xFF6200EE)),
                 modifier = Modifier.fillMaxWidth()
             ) {

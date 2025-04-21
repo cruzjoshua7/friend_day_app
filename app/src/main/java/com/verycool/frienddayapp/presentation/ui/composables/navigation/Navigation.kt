@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +26,7 @@ import com.verycool.frienddayapp.presentation.ui.composables.screens.GroupScreen
 import com.verycool.frienddayapp.presentation.ui.composables.screens.LoginScreen
 import com.verycool.frienddayapp.presentation.ui.composables.screens.MyCalendarScreen
 import com.verycool.frienddayapp.presentation.ui.composables.screens.ProfileScreen
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -32,6 +34,9 @@ fun Navigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination?.route
+
+    val viewModel : FriendDayViewModel = hiltViewModel()
+    val defaultUserId = 1
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -45,7 +50,7 @@ fun Navigation(modifier: Modifier = Modifier) {
                         }
                     },
                     onCalendarClick = {
-                        navController.navigate(Screen.MyCalenderScreen.route) {
+                        navController.navigate(Screen.MyCalenderScreen.route + "/$defaultUserId") {
                             popUpTo(Screen.MyCalenderScreen.route) { inclusive = true }
                         }
                     },
@@ -80,8 +85,15 @@ fun Navigation(modifier: Modifier = Modifier) {
                 composable(route = Screen.GroupScreen.route) {
                     GroupScreen(navController = navController)
                 }
-                composable(route = Screen.MyCalenderScreen.route) {
-                    MyCalendarScreen(navController = navController)
+                composable(
+                    route = Screen.MyCalenderScreen.route + "/{userId}",
+                    arguments = listOf(navArgument("userId"){
+                        type = NavType.IntType
+                        defaultValue = 1
+                    })
+                ) {entry ->
+                    val userId = entry.arguments?.getInt("userId") ?: 1
+                    MyCalendarScreen(viewModel = viewModel, userId = userId)
                 }
                 composable(route = Screen.ProfileScreen.route) {
                     ProfileScreen(navController = navController)
