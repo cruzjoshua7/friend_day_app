@@ -100,7 +100,7 @@ fun Navigation(modifier: Modifier = Modifier) {
                         }
                     )
                 ){ entry ->
-                    GroupCalendar(groupId = entry.arguments?.getInt("groupId")?:0)
+                    GroupCalendar(groupId = entry.arguments?.getInt("groupId")?:0, viewModel = viewModel)
                 }
             }
         }

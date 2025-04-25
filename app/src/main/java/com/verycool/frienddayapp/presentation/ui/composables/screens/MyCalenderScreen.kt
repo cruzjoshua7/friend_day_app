@@ -27,7 +27,7 @@ import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 @Composable
 fun MyCalendarScreen(
     modifier: Modifier = Modifier,
-    viewModel: FriendDayViewModel,
+    viewModel: FriendDayViewModel
 ) {
     val user by viewModel.selectedUser.collectAsState()
     val selectedDates = user?.selectedDates ?: emptySet()

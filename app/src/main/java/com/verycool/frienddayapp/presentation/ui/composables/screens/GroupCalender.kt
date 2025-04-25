@@ -24,10 +24,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,32 +38,21 @@ import androidx.compose.ui.unit.sp
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.data.model.User
 import com.verycool.frienddayapp.presentation.ui.composables.commons.CalendarGrid
-import java.time.LocalDate
+import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GroupCalendar(
     modifier: Modifier = Modifier,
-    groupId: Int = 0
+    groupId: Int = 0,
+    viewModel: FriendDayViewModel
 ) {
-    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
+    viewModel.selectGroup(groupId)
+    val group by viewModel.selectedGroup.collectAsState()
+    var selectedDates = group?.selectedDates ?: emptySet()
 
     // Dummy users for now
-    var users by remember {
-        mutableStateOf(
-            listOf(
-                User(1,"Bob", R.drawable.profile_image, true,false),
-                User(2,"Charlie", R.drawable.profile_image, false,false),
-                User(3,"Alice", R.drawable.profile_image, false,false),
-                User(4,"Alice", R.drawable.profile_image, false,false),
-                User(5,"Bob", R.drawable.profile_image, true,false),
-                User(6,"Charlie", R.drawable.profile_image, false,false),
-                User(7,"Alice", R.drawable.profile_image, false,false),
-                User(8,"Bob", R.drawable.profile_image, true,false),
-                User(9,"Charlie", R.drawable.profile_image, false,false),
-            )
-        )
-    }
+    val members = group?.members ?: emptyList()
 
     Column {
         Box(
@@ -144,7 +131,7 @@ fun GroupCalendar(
             contentPadding = PaddingValues(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            items(users) { user ->
+            items(members) { user ->
                 UserCard(
                     user = user,
                     onFavoriteToggle = { user.isFavorite = !user.isFavorite },

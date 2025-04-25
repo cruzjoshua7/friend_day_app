@@ -49,9 +49,6 @@ fun LoginScreen(
     navController: NavController,
     viewModel : FriendDayViewModel
     ) {
-
-//    val viewModel: FriendDayViewModel = hiltViewModel()
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 

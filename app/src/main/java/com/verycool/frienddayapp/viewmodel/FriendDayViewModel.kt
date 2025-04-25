@@ -1,6 +1,7 @@
 package com.verycool.frienddayapp.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.verycool.frienddayapp.data.model.Group
 import com.verycool.frienddayapp.data.model.User
 import com.verycool.frienddayapp.data.repository.GroupRepository
 import com.verycool.frienddayapp.data.repository.UserRepository
@@ -17,28 +18,28 @@ class FriendDayViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val groupRepository: GroupRepository
 ) : ViewModel(){
-    //user
-    private val _userList = MutableStateFlow(userRepository.getUsers())
-    val userList : StateFlow<List<User>> = _userList
-
+    // User
     private val _selectedUser = MutableStateFlow<User?>(null)
     val selectedUser : StateFlow<User?> = _selectedUser
 
     fun selectUser(userId : Int){
         _selectedUser.value = userRepository.getUser(userId)
     }
-
+    //user dates update
     fun updateSelectedDates(dates : Set<LocalDate>){
         _selectedUser.value = _selectedUser.value?.copy(selectedDates = dates)
     }
-
     fun clearSelectedUser(){
         _selectedUser.value = null
     }
+    //Group
+    private val _selectedGroup = MutableStateFlow<Group?>(null)
+    val selectedGroup : StateFlow<Group?> = _selectedGroup
 
-    //group
-    private val _groupList = groupRepository.getGroups()
-    val groupList = _groupList
+    fun selectGroup(groupId : Int){
+        _selectedGroup.value = groupRepository.getGroup(groupId)
+    }
+
 
 
 }
