@@ -72,7 +72,7 @@ fun GroupCalendar(
                     .background(Color.Black.copy(alpha = 0.3f)) // slight overlay for text contrast
             )
             Text(
-                text = "Group Name", // Replace with dynamic name later
+                text = group?.name?:"Group", // Replace with dynamic name later
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,

@@ -12,9 +12,6 @@ import java.time.LocalDate
 class GroupRepositoryImpl : GroupRepository {
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override  fun getGroups(): List<Group> = groups
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun getGroup(groupId : Int): Group? {
         return groups.find { it.id == groupId }
     }

@@ -8,10 +8,6 @@ import com.verycool.frienddayapp.data.model.User
 import java.time.LocalDate
 
 class UserRepositoryImpl : UserRepository {
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun getUsers(): List<User> = users
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getUser(userId: Int): User? {
         return users.find { it.userId == userId }
