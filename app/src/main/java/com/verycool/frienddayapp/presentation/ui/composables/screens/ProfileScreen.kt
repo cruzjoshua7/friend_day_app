@@ -137,8 +137,10 @@ fun ProfileScreen(
 
         Button(
             onClick = {
-                viewModel.clearSelectedUser()
-                navController.navigate(Screen.LoginScreen.route)
+                viewModel.logout()
+                navController.navigate(Screen.LoginScreen.route){
+                    popUpTo(Screen.ProfileScreen.route){inclusive = true}
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(Color.Red)

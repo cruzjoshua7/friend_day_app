@@ -14,11 +14,6 @@ class UserRepositoryImpl : UserRepository {
     }
 }
 
-
-
-
-
-
 @RequiresApi(Build.VERSION_CODES.O)
 private val today = LocalDate.now()
 @RequiresApi(Build.VERSION_CODES.O)

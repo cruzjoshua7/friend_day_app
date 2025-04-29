@@ -1,5 +1,6 @@
 package com.verycool.frienddayapp.presentation.ui.composables.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.verycool.frienddayapp.R
+import com.verycool.frienddayapp.domain.LoginState
 import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
 import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
 
@@ -51,6 +56,21 @@ fun LoginScreen(
     ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val loginState by viewModel.loginState.collectAsState()
+
+    val context = LocalContext.current
+    LaunchedEffect(loginState) {
+        when(loginState){
+            is LoginState.Success -> {
+                navController.navigate(Screen.GroupScreen.route)
+            }
+            is LoginState.Error -> {
+                val errorMessage = (loginState as LoginState.Error).message
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            }
+            else -> {}
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -124,8 +144,7 @@ fun LoginScreen(
         // Submit Button
         Button(
             onClick = {
-                viewModel.selectUser(email.toInt())
-                navController.navigate(Screen.GroupScreen.route)
+                viewModel.loginUser(email, password)
             },
             colors = ButtonDefaults.buttonColors(Color(0xFF6200EE)),
             modifier = Modifier.fillMaxWidth()
