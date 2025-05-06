@@ -8,6 +8,5 @@ data class User(
     val profileImage: String = "", // Assuming URL
     var favoriteGroupIds: List<Int> = emptyList(),
     var userGroupIds: List<Int> = emptyList(),
-    val userGroups: List<Group> = emptyList(),
     var selectedDateTimes: List<String> = emptyList()
 )

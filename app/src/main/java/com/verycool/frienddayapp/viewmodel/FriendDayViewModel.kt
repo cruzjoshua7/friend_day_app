@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -53,10 +54,10 @@ class FriendDayViewModel @Inject constructor(
                                 .distinctUntilChanged()
                                 .collect { user ->
                                     if (user != null) {
-                                        val userGroups = fetchUserGroups(user)
-                                        _selectedUser.value = user.copy(userGroups = userGroups)
+                                        _selectedUser.value = user
+                                        _userGroups.value = fetchUserGroups(user)
                                         _loginState.value = LoginState.Success
-                                        Log.d("FriendDay", "User loaded: ${user.name}, Groups: ${userGroups.map { it.name }}")
+                                        Log.d("FriendDay", "User loaded: ${user.name}")
                                     } else {
                                         _loginState.value = LoginState.Error("User data not found in Firestore.")
                                     }
