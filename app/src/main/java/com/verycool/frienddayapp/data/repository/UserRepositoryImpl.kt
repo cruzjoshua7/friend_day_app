@@ -2,42 +2,58 @@ package com.verycool.frienddayapp.data.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.google.firebase.firestore.FirebaseFirestore
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.data.model.Group
 import com.verycool.frienddayapp.data.model.User
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
+import java.time.LocalDateTime
+import javax.inject.Inject
 
-class UserRepositoryImpl : UserRepository {
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun getUser(userId: Int): User? {
-        return users.find { it.userId == userId }
+class UserRepositoryImpl @Inject constructor(
+    private val firestore : FirebaseFirestore
+): UserRepository {
+
+    override suspend fun updateUserSelectedDates(uid: String, dates: List<String>) {
+        val userDocRef = firestore.collection("users").document(uid)
+        userDocRef.update("selectedDateTimes", dates)
+    }
+
+    override suspend fun getUserByUid(uid: String): Flow<User?> = callbackFlow {
+        val docRef = firestore.collection("users").document(uid)
+        val listener = docRef.addSnapshotListener { snapshot, _ ->
+            if (snapshot != null && snapshot.exists()) {
+                val user = snapshot.toObject(User::class.java)
+                trySend(user)
+            } else {
+                trySend(null)
+            }
+        }
+        awaitClose { listener.remove() }
+    }
+
+    override fun getUser(userId: Int): Flow<User?> = callbackFlow {
+        val docRef = firestore.collection("users").document(userId.toString())
+        val listener = docRef.addSnapshotListener { snapshot, _ ->
+            if(snapshot != null && snapshot.exists()){
+                trySend(snapshot.toObject(User::class.java))
+            } else {
+                trySend(null)
+            }
+        }
+        awaitClose { listener.remove() }
+    }
+
+    override fun getAllUsers(): Flow<List<User>> = callbackFlow {
+        val colRef = firestore.collection("users")
+        val listener = colRef.addSnapshotListener { snapshots, _ ->
+            val users = snapshots?.documents?.mapNotNull { it.toObject(User::class.java) } ?: emptyList()
+            trySend(users)
+        }
+        awaitClose { listener.remove() }
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.O)
-private val today = LocalDate.now()
-@RequiresApi(Build.VERSION_CODES.O)
-private val nextMonth = today.plusMonths(1)
-
-private val dummyGroup1 = listOf(
-    Group(1, "Group A", R.drawable.group_profile_image, "Description A"),
-    Group(2, "Group B", R.drawable.group_profile_image, "Description B"),
-    Group(3, "Group C", R.drawable.group_profile_image, "Description C")
-)
-private val dummyGroup2 = listOf(
-    Group(1, "Group A", R.drawable.group_profile_image, "Description A"),
-    Group(3, "Group C", R.drawable.group_profile_image, "Description C")
-)
-
-@RequiresApi(Build.VERSION_CODES.O)
-private val users = listOf(
-    User(1, "Bob", R.drawable.profile_image, true, false, dummyGroup1, setOf(today, nextMonth.withDayOfMonth(3))),
-    User(2, "Charlie", R.drawable.profile_image, false, false, dummyGroup2, setOf(today.plusDays(2), nextMonth.withDayOfMonth(5))),
-    User(3, "Alice", R.drawable.profile_image, false, false, dummyGroup1, setOf(today.withDayOfMonth(10), nextMonth.withDayOfMonth(15))),
-    User(4, "Alice", R.drawable.profile_image, false, false, dummyGroup2, setOf(today.withDayOfMonth(20), nextMonth.withDayOfMonth(8))),
-    User(5, "Bob", R.drawable.profile_image, true, false, dummyGroup1, setOf(today.plusDays(5), nextMonth.withDayOfMonth(12))),
-    User(6, "Charlie", R.drawable.profile_image, false, false, dummyGroup2, setOf(today.withDayOfMonth(7), nextMonth.withDayOfMonth(20))),
-    User(7, "Alice", R.drawable.profile_image, false, false, dummyGroup1, setOf(today.withDayOfMonth(17), nextMonth.withDayOfMonth(9))),
-    User(8, "Bob", R.drawable.profile_image, true, false, dummyGroup1, setOf(today.withDayOfMonth(25), nextMonth.withDayOfMonth(18))),
-    User(9, "Charlie", R.drawable.profile_image, false, false, dummyGroup1, setOf(today.withDayOfMonth(13), nextMonth.withDayOfMonth(21))),
-)

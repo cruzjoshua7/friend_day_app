@@ -1,6 +1,7 @@
 package com.verycool.frienddayapp.di
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.verycool.frienddayapp.data.repository.GroupRepository
 import com.verycool.frienddayapp.data.repository.GroupRepositoryImpl
 import com.verycool.frienddayapp.data.repository.UserRepository
@@ -23,13 +24,22 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(): UserRepository = UserRepositoryImpl()
-
-    @Provides
-    @Singleton
-    fun provideGroupRepository(): GroupRepository = GroupRepositoryImpl()
-
-    @Provides
-    @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        firestore: FirebaseFirestore
+    ): UserRepository = UserRepositoryImpl(firestore)
+
+    @Provides
+    @Singleton
+    fun provideGroupRepository(
+        firestore: FirebaseFirestore,
+        dispatcher: CoroutineDispatcher
+    ): GroupRepository = GroupRepositoryImpl(firestore, dispatcher)
 }

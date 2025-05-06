@@ -23,8 +23,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.presentation.ui.composables.navigation.Screen
@@ -50,14 +53,23 @@ fun ProfileScreen(
     viewModel: FriendDayViewModel
 ) {
 
+    val user by viewModel.selectedUser.collectAsState()
     val context = LocalContext.current
-    var username by remember { mutableStateOf("User123") }
+
     var profileImageUri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         profileImageUri = uri
+        // TODO: upload new profile image & update Firestore if desired
+    }
+
+    if (user == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
     }
 
     Column(
@@ -66,13 +78,10 @@ fun ProfileScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Outer box to allow layering of profile picture and edit icon
         Box(
-            modifier = Modifier
-                .wrapContentSize(),
+            modifier = Modifier.wrapContentSize(),
             contentAlignment = Alignment.Center
         ) {
-            // Profile Picture
             Box(
                 modifier = Modifier
                     .size(100.dp)
@@ -83,18 +92,28 @@ fun ProfileScreen(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                if (profileImageUri != null) {
-                    Image(
-                        painter = rememberAsyncImagePainter(profileImageUri),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier.size(100.dp)
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.profile_image),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier.size(100.dp)
-                    )
+                when {
+                    profileImageUri != null -> {
+                        Image(
+                            painter = rememberAsyncImagePainter(profileImageUri),
+                            contentDescription = "New Profile Picture",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+                    user!!.profileImage.isNotBlank() -> {
+                        AsyncImage(
+                            model = user!!.profileImage,
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
+                    else -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_image),
+                            contentDescription = "Default Profile Picture",
+                            modifier = Modifier.size(100.dp)
+                        )
+                    }
                 }
             }
 
@@ -114,14 +133,14 @@ fun ProfileScreen(
         // Profile Detail Cards
         ProfileCard(
             icon = R.drawable.profile_image,
-            text = "Username",
+            text = "Username: ${user?.name ?: "Unknown"}",
             rightIcon = R.drawable.edit_pencil,
             onClick = { }
         )
 
         ProfileCard(
             icon = R.drawable.mail_icon,
-            text = "Email: user@example.com",
+            text = "Email: ${user?.uid ?: "No email"}", // If email isn't stored in User, update accordingly
             rightIcon = R.drawable.edit_pencil,
             onClick = { }
         )

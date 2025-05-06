@@ -24,8 +24,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,10 +39,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.verycool.frienddayapp.R
 import com.verycool.frienddayapp.data.model.User
 import com.verycool.frienddayapp.presentation.ui.composables.commons.CalendarGrid
 import com.verycool.frienddayapp.viewmodel.FriendDayViewModel
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -47,18 +53,31 @@ fun GroupCalendar(
     groupId: Int = 0,
     viewModel: FriendDayViewModel
 ) {
-    viewModel.selectGroup(groupId)
-    val group by viewModel.selectedGroup.collectAsState()
-    var selectedDates = group?.selectedDates ?: emptySet()
+    // Trigger group selection
+    LaunchedEffect(groupId) {
+        viewModel.selectGroup(groupId)
+    }
 
-    // Dummy users for now
+    val group by viewModel.selectedGroup.collectAsState()
+
+    // Local selectedDates state derived from group's selectedDateTimes
+    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
+
+    // Sync when group data changes
+    LaunchedEffect(group) {
+        selectedDates = group?.selectedDateTimes
+            ?.map { it.toLocalDate() }
+            ?.toSet() ?: emptySet()
+    }
+
     val members = group?.members ?: emptyList()
 
-    Column {
+    Column(modifier = modifier.fillMaxSize()) {
+        // Banner
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp) // reduced height
+                .height(60.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.banner),
@@ -66,20 +85,17 @@ fun GroupCalendar(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize()
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f)) // slight overlay for text contrast
-            )
+            Box(modifier = Modifier.matchParentSize().background(Color.Black.copy(alpha = 0.3f)))
             Text(
-                text = group?.name?:"Group", // Replace with dynamic name later
+                text = group?.name ?: "Group",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center)
             )
         }
+
+        // Calendar
         CalendarGrid(
             selectedDates = selectedDates,
             onDateClick = { date ->
@@ -90,21 +106,24 @@ fun GroupCalendar(
                 }
             }
         )
+
+        // Action buttons (not functional yet)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Button(
-                onClick = { /* handle add */ },
+                onClick = { /* handle +Event later */ },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(Color(0xFF6200EE))
-
             ) {
                 Text("+ Event")
             }
 
             Button(
-                onClick = { /* handle remove */ },
+                onClick = { /* handle -Event later */ },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(Color(0xFF6200EE))
             ) {
@@ -112,52 +131,46 @@ fun GroupCalendar(
             }
         }
 
+        // Member header
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "Group Members",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Group Members", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
 
+        // Member list
         LazyColumn(
-            modifier = modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             items(members) { user ->
                 UserCard(
                     user = user,
-                    onFavoriteToggle = { user.isFavorite = !user.isFavorite },
-                    onFilterToggle = {user.isFilter = !user.isFilter}
+//                    onFavoriteToggle = { user.isFavorite = !user.isFavorite },
+//                    onFilterToggle = { user.isFilter = !user.isFilter }
                 )
             }
         }
-
     }
 }
+
 
 @Composable
 fun UserCard(
     user: User,
-    onFavoriteToggle: () -> Unit,
-    onFilterToggle: () -> Unit
+//    onFavoriteToggle: () -> Unit,
+//    onFilterToggle: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
-
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
-            Image(
-                painter = painterResource(id = user.profileImage),
+            AsyncImage(
+                model = user.profileImage,
                 contentDescription = null,
                 modifier = Modifier.size(50.dp)
             )
@@ -167,36 +180,35 @@ fun UserCard(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f)
             )
-            IconButton(onClick = onFavoriteToggle) {
+//            IconButton(onClick = onFavoriteToggle) {
+//                Image(
+//                    painter = painterResource(
+//                        if (user.isFavorite) R.drawable.filled_heart else R.drawable.empty_heart
+//                    ),
+//                    contentDescription = "Favorite",
+//                    modifier = Modifier.size(24.dp)
+//                )
+//            }
+//            IconButton(onClick = onFilterToggle) {
+//                Image(
+//                    painter = painterResource(
+//                        if (user.isFilter) R.drawable.filter_filled else R.drawable.filter_empty
+//                    ),
+//                    contentDescription = "Filter",
+//                    modifier = Modifier.size(24.dp)
+//                )
+//            }
+            IconButton(onClick = { /* TODO: delete */ }) {
                 Image(
-                    painter = painterResource(
-                        if (user.isFavorite) R.drawable.filled_heart else R.drawable.empty_heart
-                    ),
-                    contentDescription = "Favorite",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            IconButton(onClick = onFilterToggle) {
-                Image(
-                    painter = painterResource(
-                        if (user.isFavorite) R.drawable.filter_filled else R.drawable.filter_empty
-                    ),
-                    contentDescription = "Favorite",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            IconButton(onClick = {}) {
-                Image(
-                    painter = painterResource(
-                        R.drawable.trash_icon
-                    ),
-                    contentDescription = "Favorite",
+                    painter = painterResource(R.drawable.trash_icon),
+                    contentDescription = "Delete",
                     modifier = Modifier.size(24.dp)
                 )
             }
         }
     }
 }
+
 
 
 
