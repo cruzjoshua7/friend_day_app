@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "104234650784",
+    "project_id": "frienddayapp",
+    "storage_bucket": "frienddayapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104234650784:android:d650834b4406a172d88dc5",
+        "android_client_info": {
+          "package_name": "com.verycool.frienddayapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ8eeL2P_mr-zJi4brX-TCC1kqrUN-tZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

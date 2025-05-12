@@ -53,17 +53,14 @@ fun GroupCalendar(
     groupId: Int = 0,
     viewModel: FriendDayViewModel
 ) {
-    // Trigger group selection
     LaunchedEffect(groupId) {
         viewModel.selectGroup(groupId)
     }
 
     val group by viewModel.selectedGroup.collectAsState()
 
-    // Local selectedDates state derived from group's selectedDateTimes
     var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
 
-    // Sync when group data changes
     LaunchedEffect(group) {
         selectedDates = group?.selectedDateTimes
             ?.map { it.toLocalDate() }
@@ -73,7 +70,6 @@ fun GroupCalendar(
     val members = group?.members ?: emptyList()
 
     Column(modifier = modifier.fillMaxSize()) {
-        // Banner
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,7 +91,6 @@ fun GroupCalendar(
             )
         }
 
-        // Calendar
         CalendarGrid(
             selectedDates = selectedDates,
             onDateClick = { date ->
@@ -107,7 +102,6 @@ fun GroupCalendar(
             }
         )
 
-        // Action buttons (not functional yet)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -115,7 +109,7 @@ fun GroupCalendar(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Button(
-                onClick = { /* handle +Event later */ },
+                onClick = { },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(Color(0xFF6200EE))
             ) {
@@ -123,7 +117,7 @@ fun GroupCalendar(
             }
 
             Button(
-                onClick = { /* handle -Event later */ },
+                onClick = { },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(Color(0xFF6200EE))
             ) {
@@ -131,7 +125,6 @@ fun GroupCalendar(
             }
         }
 
-        // Member header
         Box(
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
             contentAlignment = Alignment.Center
@@ -139,7 +132,6 @@ fun GroupCalendar(
             Text("Group Members", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
 
-        // Member list
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(6.dp),

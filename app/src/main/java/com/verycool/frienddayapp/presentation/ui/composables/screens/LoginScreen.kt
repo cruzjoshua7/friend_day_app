@@ -2,10 +2,8 @@ package com.verycool.frienddayapp.presentation.ui.composables.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -80,7 +77,6 @@ fun LoginScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        // Banner Image
         Image(
             painter = painterResource(id = R.drawable.login_banner),
             contentDescription = "Banner Image",
@@ -103,7 +99,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Password Input
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -121,7 +116,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Clickable Texts
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -143,7 +137,6 @@ fun LoginScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Submit Button
         Button(
             onClick = {
                 viewModel.loginUser(email, password)

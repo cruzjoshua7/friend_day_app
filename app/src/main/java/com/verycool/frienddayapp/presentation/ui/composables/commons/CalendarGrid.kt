@@ -58,7 +58,6 @@ fun CalendarGrid(
         .background(Color.White, shape = RoundedCornerShape(12.dp))
         .padding(12.dp)
     ) {
-        // Month Navigation
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -78,7 +77,6 @@ fun CalendarGrid(
 
         Spacer(modifier = Modifier.height(1.dp))
 
-        // Day Labels
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat").forEach { day ->
                 Text(
@@ -92,7 +90,6 @@ fun CalendarGrid(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Calendar Grid
         Box(
             modifier = Modifier
                 .fillMaxWidth()

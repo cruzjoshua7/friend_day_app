@@ -42,7 +42,7 @@ fun Navigation(modifier: Modifier = Modifier) {
         bottomBar = {
             if (currentDestination != Screen.LoginScreen.route) {
                 BottomNavBar(
-                    currentDestination = currentDestination, // 👈 pass it here
+                    currentDestination = currentDestination,
                     onGroupsClick = {
                         navController.navigate(Screen.GroupScreen.route) {
                             popUpTo(Screen.GroupScreen.route) { inclusive = true }

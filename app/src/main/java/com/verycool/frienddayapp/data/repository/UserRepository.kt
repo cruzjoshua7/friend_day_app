@@ -2,7 +2,6 @@ package com.verycool.frienddayapp.data.repository
 
 import com.verycool.frienddayapp.data.model.User
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDateTime
 
 interface UserRepository {
 
